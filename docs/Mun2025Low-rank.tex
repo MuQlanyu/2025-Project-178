@@ -1,13 +1,24 @@
-\documentclass[a4paper,14pt]{article}
+\documentclass[12pt, twoside]{article}
+\usepackage{jmlda}
+\usepackage[]{algorithmic}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{subfig}
 
-%%% Работа с русским языком
-\usepackage{cmap}					% поиск в PDF
-\usepackage{mathtext} 				% русские буквы в формулах
-\usepackage[T2A]{fontenc}			% кодировка
-\usepackage[utf8]{inputenc}			% кодировка исходного текста
-\usepackage[english,russian]{babel}	% локализация и переносы
-\usepackage{indentfirst}
-\frenchspacing
+\usepackage[russian]{babel}
+
+
+% Compatibility for biblatex
+\usepackage{csquotes}
+
+% Load biblatex before cleveref
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{references.bib}
+
+
+\newcommand{\hdir}{.}
+\newtheorem{statement}{Утверждение}
 
 \newcommand{\bz}{\mathbf{z}}
 \newcommand{\bx}{\mathbf{x}}
@@ -36,9 +47,12 @@
 \newcommand{\bE}{\mathbf{E}}
 \newcommand{\bF}{\mathbf{F}}
 \newcommand{\bomega}{\boldsymbol{\omega}}
+\newcommand{\bOmega}{\boldsymbol{\Omega}}
 \newcommand{\btheta}{\boldsymbol{\theta}}
+\newcommand{\bTheta}{\boldsymbol{\Theta}}
 \newcommand{\bgamma}{\boldsymbol{\gamma}}
 \newcommand{\bdelta}{\boldsymbol{\delta}}
+\newcommand{\bDelta}{\boldsymbol{\Delta}}
 \newcommand{\bPsi}{\boldsymbol{\Psi}}
 \newcommand{\bpsi}{\boldsymbol{\psi}}
 \newcommand{\bxi}{\boldsymbol{\xi}}
@@ -51,127 +65,168 @@
 \newcommand{\cX}{\mathcal{X}}
 \newcommand{\cY}{\mathcal{Y}}
 \newcommand{\cW}{\mathcal{W}}
+\newcommand{\cF}{\mathcal{F}}
 
-\newcommand{\dH}{\mathbb{H}}
-\newcommand{\dR}{\mathbb{R}}
-\newcommand{\dE}{\mathbb{E}}
+\newcommand{\HH}{\mathbb{H}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\EE}{\mathbb{E}}
 % transpose
 \newcommand{\T}{^{\mathsf{T}}}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}}
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
 
-\renewcommand{\epsilon}{\ensuremath{\varepsilon}}
-\renewcommand{\phi}{\ensuremath{\varphi}}
-\renewcommand{\kappa}{\ensuremath{\varkappa}}
-\renewcommand{\le}{\ensuremath{\leqslant}}
-\renewcommand{\leq}{\ensuremath{\leqslant}}
-\renewcommand{\ge}{\ensuremath{\geqslant}}
-\renewcommand{\geq}{\ensuremath{\geqslant}}
-\renewcommand{\emptyset}{\varnothing}
-
-%%% Дополнительная работа с математикой
-\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
-\usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечисление
-
-%% Номера формул
-%\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
-%\usepackage{leqno} % Нумереация формул слева
-
-%% Свои команды
-\DeclareMathOperator{\sgn}{\mathop{sgn}}
-
-%% Перенос знаков в формулах (по Львовскому)
-\newcommand*{\hm}[1]{#1\nobreak\discretionary{}
-	{\hbox{$\mathsurround=0pt #1$}}{}}
-
-%%% Работа с картинками
-\usepackage{graphicx}  % Для вставки рисунков
-\setlength\fboxsep{3pt} % Отступ рамки \fbox{} от рисунка
-\setlength\fboxrule{1pt} % Толщина линий рамки \fbox{}
-\usepackage{wrapfig} % Обтекание рисунков текстом
-
-%%% Работа с таблицами
-\usepackage{array,tabularx,tabulary,booktabs} % Дополнительная работа с таблицами
-\usepackage{longtable}  % Длинные таблицы
-\usepackage{multirow} % Слияние строк в таблице
-
-%%% Теоремы
-\theoremstyle{plain} % Это стиль по умолчанию, его можно не переопределять.
-\newtheorem{theorem}{Теорема}[section]
-\newtheorem{proposition}[theorem]{Утверждение}
-
-\theoremstyle{definition} % "Определение"
-\newtheorem{corollary}{Следствие}[theorem]
-\newtheorem{problem}{Задача}[section]
-
-\theoremstyle{remark} % "Примечание"
-\newtheorem*{nonum}{Решение}
-
-%%% Программирование
-\usepackage{etoolbox} % логические операторы
-
-%%% Страница
-\usepackage{extsizes} % Возможность сделать 14-й шрифт
-\usepackage{geometry} % Простой способ задавать поля
-\geometry{top=25mm}
-\geometry{bottom=35mm}
-\geometry{left=35mm}
-\geometry{right=20mm}
-%
-%\usepackage{fancyhdr} % Колонтитулы
-% 	\pagestyle{fancy}
-%\renewcommand{\headrulewidth}{0pt}  % Толщина линейки, отчеркивающей верхний колонтитул
-% 	\lfoot{Нижний левый}
-% 	\rfoot{Нижний правый}
-% 	\rhead{Верхний правый}
-% 	\chead{Верхний в центре}
-% 	\lhead{Верхний левый}
-%	\cfoot{Нижний в центре} % По умолчанию здесь номер страницы
-
-\usepackage{setspace} % Интерлиньяж
-%\onehalfspacing % Интерлиньяж 1.5
-%\doublespacing % Интерлиньяж 2
-%\singlespacing % Интерлиньяж 1
-
-\usepackage{lastpage} % Узнать, сколько всего страниц в документе.
-
-\usepackage{soul} % Модификаторы начертания
-
-\usepackage{hyperref}
-\usepackage[usenames,dvipsnames,svgnames,table,rgb]{xcolor}
-\hypersetup{				% Гиперссылки
-	unicode=true,           % русские буквы в раздела PDF
-	pdftitle={Заголовок},   % Заголовок
-	pdfauthor={Автор},      % Автор
-	pdfsubject={Тема},      % Тема
-	pdfcreator={Создатель}, % Создатель
-	pdfproducer={Производитель}, % Производитель
-	pdfkeywords={keyword1} {key2} {key3}, % Ключевые слова
-	colorlinks=true,       	% false: ссылки в рамках; true: цветные ссылки
-	linkcolor=red,          % внутренние ссылки
-	citecolor=black,        % на библиографию
-	filecolor=magenta,      % на файлы
-	urlcolor=cyan           % на URL
-}
-
-\usepackage{csquotes} % Еще инструменты для ссылок
-
-% \usepackage[style=authoryear,maxcitenames=2,backend=biber,sorting=nty]{biblatex}
-% \addbibresource{references.bib}
-\usepackage[numbers]{natbib}
-
-\usepackage{multicol} % Несколько колонок
-
-\usepackage{tikz} % Работа с графикой
-\usepackage{pgfplots}
-\usepackage{pgfplotstable}
+% method name
+% \newcommand{\mname}{LoSPIN}
 
 
-\author{Pavel Mun, Nikita Okhotnikov}
-\title{\textbf{Low-rank self-play fine-tuning for small LLMs}}
-\date{\today}
 
 \begin{document}
-	\maketitle
-	
-	\section{Abstract}
-		В работе исследуется проблема дообучения больших языковых моделей (LLM) в условиях ограниченных ресурсов. Предлагается метод дообучения, основанный на адаптерах LoRA для экономии видеопамяти, а также методе SPIN для адаптеров, который повышает качества модели без дополнительных размеченных данных. Для анализа качества метода будет использована группа датасетов, таких как MMLU, Winogrande.
+
+\title
+    [] % краткое название; не нужно, если полное название влезает в~колонтитул
+    {Low-rank self-play fine-tuning for small LLMs}
+\author
+    [] % список авторов (не более трех) для колонтитула; не нужен, если основной список влезает в колонтитул
+    {П.\,Ю.~Мун, Н.\,В.~Охотников, А.\,В.~Грабовой} % основной список авторов, выводимый в оглавление
+    [П.\,Ю.~Мун$^1$, Н.\,В.~Охотников$^2$, А.\,В.~Грабовой$^3$] % список авторов, выводимый в заголовок; не нужен, если он не отличается от основного
+%\email
+%   {anton39reg@mail.ru; anton.khritankov@phystech.edu}
+
+%\thanks
+%    {Работа выполнена при
+%     %частичной
+%     финансовой поддержке РФФИ, проекты \No\ \No 00-00-00000 и 00-00-00001.}
+%\organization
+%    {$^1$Организация, адрес; $^2$Организация, адрес}
+\abstract
+  {В работе исследуется проблема дообучения больших языковых моделей (LLM) в условиях ограниченных ресурсов. Под ограниченными ресурсами понимается видеопамять, человеческое участие и время обучения. В работе рассматриваются модели до 1.5B. Предлагается метод дообучения, основанный на внедрении адаптеров LoRA, малоранговых раложений матриц, в слои архитектуры трансформера, и использовании стратегии self-play - текущая итерация генерирует предсказания, а обучающаяся повышает качество с помощью разграничения настоящих предсказаний от сгенерированных. Метод может снизить количество обучаемых параметров в 10000, и память в три раза, также он не требует размеченных данных помимо используемых на этапе SFT. Для анализа качества метода будет использована группа датасетов, таких как MMLU, Winogrande.
+
+
+\bigskip
+\noindent
+\textbf{Ключевые слова}: \emph {LLM, LoRA, selp-play, SFT}
+}
+%данные поля заполняются редакцией журнала
+\doi{}
+\receivedRus{}
+\receivedEng{}
+
+\maketitle
+\linenumbers
+\section{Введение}
+Большие языковые модели (LLM) демонстрируют исключительные возможности в широком спектре областей, которые могут требовать специализированных знаний. Примерами таких областей могут служить: программирование \parencite{Chen2021}, генерация текстов \parencite{Touvron2023}, обращения к базам данных \parencite{Zhong2017}. Обычно процесс обучения LLM состоит из нескольких этапов: предварительного обучения, контролируемой тонкой натройки(SFT) и обучения с подкреплением на основе отзывов людей (RLHF). Предварительное обучение требует огромных вычислительных ресурсов, поэтому часто используют публичные предобученные модели (Llama3 \parencite{Dubey2024}, Qwen2.5 \parencite{Yang2025}) и дообучают под целевую задачу. Часто проблема жесткой ограниченности ресурсов встречается при дообучении маленьких LLM. Ограниченность ресурсов проявляется в недостатке видеопамяти для хранения и обновления параметров модели, необходимости в размеченных данных для повышения качества и времени обучения.
+
+По вышеперечисленным причинам хотелось бы исследовать методы, которые бы использовали меньше ресурсов и не понижали качество модели. В данной работе предлагается метод дообучения LLM, который значительно снижает потребление видеопамяти, а также убирает необходимость в прямом человеческом участии без снижения качества модели. Метод основан на двух идеях. 
+
+\begin{itemize}
+  \item Во-первых, внедрение адаптеров LoRA в слои трансформера. Предполагается сравнительно маленькая внутренняя размерность обучаемых матриц модели, и вместо обучения всей матрицы добавляют приращение в виде малорангового разложения в две обучаемые матрицы, замораживая параметры изначальной. 
+  
+  \vspace{8}
+   
+  \item Во-вторых, механизме самостоятельной игры (self-play) для обучения адаптеров. Общий метод исследуется в статье \parencite{Chen2024a}, а  в данной работе он применяется исключительно к адаптерам LoRA. Механизм состоит из последовательных игр модели со своими прошлыми итерациями. Прошлая итерация генерирует ответы по промптам части датасета на этапе SFT, а модель пытается различить настоящий ответ от сгенерированного. Предполагается наличие распределения у настоящих ответов датасета и полученная модель лучше настроена под предполагаемое распределение.
+\end{itemize}
+
+Предложенный метод развивается в двух направлениях: снижение требований к видео памяти и снижение человеческого участия. В обоих направлениях есть близкие альтернативы:
+
+\begin{itemize}
+  \item Многие существующие решения по снижению требуемой памяти также применяют адаптеры LoRA с использованием других интсрументов. Одним из лучших методов является QLoRA \parencite{Dettmers2023}, который применяет 4х битные NormalFloat и квантизацию, значительно снижая необходимую память. В отличии от LoRA, которая снижает количество обучаемых параметров, QLoRA также уменьшает размер параметров модели с помощью 4х битных NormalFloat, что приводит в меньшим требованиям к видеопамяти. С другой стороны, QLoRA требует передового оборудования для применения, что редко доступно в условиях ограниченных ресурсов. 
+
+  \vspace{8}
+  
+  \item В направлении снижения человеческого участия можно выделить методы оптимизирующие этап RLHF. Одним из таких являетя метод DPO \parencite{Rafailov2023a}, который снижает зависимость от человеского оценивания результата. В то же время предложенный метод не требует размеченных данных, помимо тех, что используются на SFT.
+\end{itemize}
+
+Конечной целью работы является исследование оправданности применения предложенного метода к маленьким LLM в условиях ограниченных ресурсов.
+
+[Тут будет сравнительная таблица, и по мере исследования она будет наполняться.]
+
+\vspace{10}
+
+\section{Связанные работы}
+
+TODO:
+
+\vspace{10}
+
+\section{Постановка задачи}
+
+Будем обозначать за $\bTheta$ - пространство всевозможных параметров трансформера, $p_{\btheta}$ - модель , а $\btheta \in \bTheta$ -  ее параметры. На вход модель принимает промпт $\bx = [x_1, ..., x_n]$ и возвращает ответ $\by' = [y_1', ..., y_m']$, который должен согласовываться с истинным ответом $\by=[y_1, ..., y_m]$.
+
+Так как рассматривается дообучение модели, то у модели есть начальные параметры $\btheta_0$ и параметры итераций дообуения $\btheta_t$
+
+Также для дальнейшей работы с методом введем вероятностные предположения о распределениях данных: $\bx \sim q(\cdot)$,  $\by \sim p_{data}(\cdot | \bx)$. 
+
+Теперь перейдем к введению понятий для обозначений методов.
+
+\paragraph{Адаптеры LoRA}
+Адаптеры LoRA встраиваются на всех слоях в матрицы: $W_q, W_k, W_v$ - query/key/value матрицы блоков self-attention в архитектуре трансформера. Тогда итоговая матрица параметров имеет вид: $W = W_0 + A * B$, где $W_0$ - изначальная матрица замороженных весов, а $A * B$ - адаптер.
+
+Обобщая с матриц на все параметры модели, получим формулу 
+
+$$\btheta_t = \btheta_0 + \bDelta\btheta_t$$
+
+, где $\bDelta \btheta_t$ - веса адаптеров LoRA на всех слоях, а $\btheta_0$ - замороженные веса исходной модели
+
+\paragraph{Подробное описание SPIN}
+
+В центре механизма self-play находится игра между: игроком и противником. Цель противника сгенерировать ответы, которые были бы неразличимы с настоящими ответами, а цель игрока уметь различать настоящие ответы от сгенерированных. В рамках дообучения опонентом является прошлая итерация модели, а игроком текущая итерация, которая обучается.
+
+Рассмотрим итерацию t+1, противником на данной итерации является $p_{\btheta_t}$, которая по промптам $\bx$ генерирует ответы $\by'$, а игроком $p_{\btheta_{t+1}}$. Метод состоит из двух шагов: обучение игрока, обновление опонента
+
+\begin{itemize}
+    \item В качестве целевой функции для первого шага используется:
+    \begin{align}
+        f_{t+1} &= \argmax_{f \in \cF_{t}}\EE_{\bx\sim q(\cdot), \by\sim p_{data}(\cdot | \bx)}\big[l(f(\bx, \by) - f(\bx, \by')) \big], \label{eq:f*1}
+    \end{align}
+    , где $l = log(1 + exp(-t))$, семейство функций $\cF_t$ будет явно задано позже
+
+    \vspace{8}
+
+    \item Для обновления опонента используется следующая функция:
+    \begin{align}
+        p_{\btheta_{t+1}} = \argmax_ {p}\EE_{\bx \sim q(\cdot), \by\sim p(\cdot|\bx)} [f_{t+1}(\bx, \by)]\notag - \lambda \EE_{\bx\sim q(\cdot)}\mathrm{KL}\big(p(\cdot|\bx)||p_{\btheta_t}(\cdot|\bx)\big), \label{eq: update}
+    \end{align} 
+    , где $\lambda$ - коэффициент регуляризации похожести итераций, а $KL$ - дивергенция Кульбака-Лейблера. Регуляризация добавлена с целью контроля обучаемой итерации, чтобы $p_\btheta_{t+1}$  не сильно отличалась от $p_\btheta_t$
+    
+    
+\end{itemize}
+
+\paragraph{Одношаговое описание SPIN}
+
+Из последней формулы можно вывести оптимальное значение 
+
+\begin{align}
+\hat{p}(\by|\bx) \propto p_{\btheta_t}(\by|\bx) \exp\big(\lambda^{-1}f_{t+1}(\bx, \by)\big). \label{eq:closed form solution}  
+\end{align}
+
+Данная модель может не быть в рассматриваемом семействе моделей $\{p_{\btheta} | \btheta \in \bTheta\}$, но отсуда можно вывести семейство моделей для $f_{t+1}$:
+
+\begin{align}
+\cF_{t} = \bigg\{\lambda\cdot \log \frac{p_{\btheta}(\by | \bx)}{p_{\mathrm{\btheta_t}}(\by | \bx)}\bigg|\btheta \in \bTheta\bigg\},   \label{eq:function class0} 
+\end{align}
+
+Подставляя элементы полученного семейства в формулу 1, получим искомый критерий качеста, используемый при обучении.
+
+\begin{align}
+L_{SPIN}= \EE_{\bx\sim q(\cdot), \by\sim p_{data}(\cdot | \bx)}\bigg[\ell\bigg(\lambda \log \frac{p_{\btheta}(\by | \bx)}{p_{\btheta_t}(\by | \bx)}-\lambda \log \frac{p_{\btheta}(\by' | \bx)}{p_{\btheta_t}(\by' | \bx)}\bigg)\bigg], \label{eq:loss}  
+\end{align}
+
+Тогда правило обновление параметров выглядит так:
+
+\begin{align}
+    \btheta_{t+1} = \argmin_{\btheta \in \bTheta} L_{SPIN} (\btheta, \btheta_t)
+\end{align}
+
+
+\paragraph{Применение SPIN к адаптерам}
+
+Обозначим за $\bOmega \subset \bTheta$ - подпространство весов адаптеров LoRA в архитектуре трансформера.
+
+\begin{align}
+    \bDelta\btheta_{t+1} = \argmin_{\bDelta\btheta \in \bOmega} L_{SPIN} (\btheta_0 + \bDelta\btheta, \btheta_0 + \bDelta \btheta_t)
+\end{align}
+
+\printbibliography
+
 \end{document}
+
