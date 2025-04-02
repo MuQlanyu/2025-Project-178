@@ -248,11 +248,27 @@ L_{SPIN}= \EE_{\bx\sim q(\cdot), \by\sim p_{data}(\cdot | \bx)}\bigg[\ell\bigg(\
 
 \paragraph{Применение SPIN к адаптерам}
 
-Обозначим за $\bOmega \subset \bTheta$ - подпространство весов адаптеров LoRA в архитектуре трансформера. Заметим, что подставление параметров адаптеров LoRA $\bDelta\btheta$ сужает рассматриваемый класс функций $\{p_{\btheta_0 + \bDelta\btheta} | \bDelta\btheta \in \bOmega\} \subset \{p_{\btheta} | \btheta \in \bTheta\}$, но все равно может быть применим в полученному критерию качества $L_{SPIN}$
+Обозначим за $\bOmega \subset \bTheta$ - подпространство весов адаптеров LoRA в архитектуре трансформера. Заметим, что подставление параметров адаптеров LoRA $\bDelta\btheta$ сужает рассматриваемый класс функций $\{p_{\btheta_0 + \bDelta\btheta} | \bDelta\btheta \in \bOmega\} \subset \{p_{\btheta} | \btheta \in \bTheta\}$, или же снижает размерность пространства обучаемых параметров, но все равно может быть применим в полученному критерию качества $L_{SPIN}$
 
 \begin{align}
     \bDelta\btheta_{t+1} = \argmin_{\bDelta\btheta \in \bOmega} L_{SPIN} (\btheta_0 + \bDelta\btheta, \btheta_0 + \bDelta \btheta_t)
 \end{align}
+
+\begin{algorithm}[ht!]
+\caption{Self-Play Fine-Tuning с адаптерами LoRA}\label{alg:Improving}
+\begin{algorithmic}%[l]
+\STATE \textbf{Дано:} $\{(\bx_i, \by_i)\}_{i\in \{1 ... n\}}$: SFT датасет, $T$: Number of iterations. 
+\FOR{$t = 0,\ldots, T-1$}
+\FOR{$i = 1, \ldots N$}
+\STATE Генерация ответов моделью противником: $\by_{i}' \sim p_{\btheta_0 + \bDelta \btheta_t}(\cdot|\bx_i)$.
+\ENDFOR 
+\STATE  $\bDelta\btheta_{t+1} = \argmin_{\bDelta\btheta \in \bOmega} \sum_{i = 1}^n\ell\Big(\lambda \log \frac{p_{\btheta + \bDelta \btheta}(\by_i | \bx_i)}{p_{\btheta_0 + \bDelta \btheta_t}(\by_i | \bx_i)}-\lambda \log \frac{p_{\btheta + \bDelta \btheta}(\by'_i | \bx_i)}{p_{\btheta_0 + \bDelta \btheta_t}(\by'_i | \bx_i)}\Big)$.
+\ENDFOR
+\STATE \textbf{Вывод:} $\bDelta \btheta_T$.
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{10}
 
 \section{Вычислительный эксперимент}
 
