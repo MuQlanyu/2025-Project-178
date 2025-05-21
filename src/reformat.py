@@ -28,6 +28,27 @@ def load_and_process_data_ultrachat(dataset_name, split):
         logging.error(f"Error loading or processing dataset: {e}")
         return []
 
+# Added formatting gsm8k
+def load_and_process_data_gsm(data, split):
+    try:
+        dataset = data[split]
+        reformatted_data = [{
+            'generated': [
+                {'role': 'system', 'content': 'You are ai assistant that solves mathematical tasks'},
+                {'role': 'user', 'content': message['question']},
+                {"role": "assistant", "content": ""}
+            ],
+            'real': [
+                {'role': 'system', 'content': 'You are ai assistant that solves mathematical tasks'},
+                {'role': 'user', 'content': message['question']},
+                {'role': 'user', 'content': message['answer']}
+            ]
+        } for message in dataset]
+        return reformatted_data
+    except Exception as e:
+        logging.error(f"Error loading or processing dataset: {e}")
+        return []
+
 
 def save_to_json(data, path):
     try:
@@ -36,11 +57,13 @@ def save_to_json(data, path):
     except IOError as e:
         logging.error(f"Error saving data to {path}: {e}")
 
+
 def save_to_parquet(dataset, path):
     try:
         pq.write_table(dataset.data.table, path)
     except Exception as e:
         logging.error(f"Error saving data to {path}: {e}")
+
 
 def main():
     args = setup_arg_parser()
@@ -50,6 +73,10 @@ def main():
     if args.data == 'HuggingFaceH4/ultrachat_200k':
         train_data = load_and_process_data_ultrachat(args.data, 'train_sft')
         test_data = load_and_process_data_ultrachat(args.data, 'test_sft')
+    elif args.data == 'openai/gsm8k':
+        data = load_dataset("openai/gsm8k", "main")
+        train_data = load_and_process_data_gsm(data, 'train')
+        test_data = load_and_process_data_gsm(data, 'test')
     else:
         raise ValueError(f"current {args.data} dataset is not supported")
 
