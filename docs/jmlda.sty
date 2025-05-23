@@ -42,7 +42,7 @@
 \RequirePackage{mathrsfs}
 \RequirePackage{euscript}
 \RequirePackage{upgreek}
-\RequirePackage[displaymath,mathlines]{lineno}
+% \RequirePackage[displaymath,mathlines]{lineno}
 \RequirePackage{array}
 \RequirePackage{theorem}
 \RequirePackage[ruled]{algorithm}
@@ -224,11 +224,11 @@
   \endgroup
 }
 
-\let\oldlinenumbers\linenumbers
-\def\linenumbers{
-  \oldlinenumbers%
-  \setlength\vskipBeforeSecondaryTitle{-5ex}%
-}
+% \let\oldlinenumbers\linenumbers
+% \def\linenumbers{
+%   \oldlinenumbers%
+%   \setlength\vskipBeforeSecondaryTitle{-5ex}%
+% }
 
 % Вывод второго заголовка
 \def\type@titleSecondary{%
@@ -485,11 +485,6 @@
 \newcommand{\abstractRus}[1]{\gdef\@abstract@rus{{#1}}}
 \newcommand{\thanksRus}[1]{\gdef\@thanks@grant@rus{{#1}}}
 
-% Библиографическая запись текущей статьи
-\def\paper@record{
- \ruseng{Машинное обучение и анализ данных, 2017. Том\,??, \No\,??.}%\\
-        {Machine Learning and Data Analysis, 2017. Volume\,??.\,Issue ??. }
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Переопределение колонтитулов
